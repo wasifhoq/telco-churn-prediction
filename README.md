@@ -1,83 +1,144 @@
-# Telco Churn Prediction
+# Telco Customer Churn Prediction
 
-Machine learning project to predict customer churn for a telecommunications company based on historical customer data.
+This project explores customer churn in a telecommunications dataset and builds a
+baseline machine-learning model to identify customers who are likely to leave.
+The analysis is implemented in a Jupyter notebook using pandas, visualization
+libraries, and scikit-learn.
 
-## Overview
+## Project Status
 
-Customer churn refers to customers who discontinue their service. This project builds and evaluates classification models that predict whether a customer is likely to churn, enabling the business to target at-risk customers with proactive retention strategies.
+The project currently contains:
+
+- Data cleaning and type conversion
+- Exploratory data analysis (EDA)
+- Feature preparation and one-hot encoding
+- A stratified train/test split
+- A scaled, class-balanced logistic regression baseline
+- Cross-validation and test-set evaluation
+
+Further model comparison and tuning are not implemented yet.
 
 ## Dataset
 
-The project uses a telecom customer dataset containing demographic, account, and service information, including:
+The dataset is stored in
+[`data/Telco-Customer-Churn.csv`](data/Telco-Customer-Churn.csv). It contains
+7,043 customer records and includes:
 
-- **Customer demographics** – gender, senior citizen status, partner, dependents
-- **Services** – phone, internet, online security, streaming, etc.
-- **Account details** – tenure, contract type, payment method, monthly/total charges
-- **Target variable** – `Churn` (Yes/No)
+- **Customer information:** gender, senior-citizen status, partner, and dependents
+- **Services:** phone, internet, security, backup, protection, support, and streaming
+- **Account information:** tenure, contract, billing, payment method, and charges
+- **Target:** `Churn`, where `Yes` means the customer left and `No` means the
+  customer stayed
 
-## Tech Stack
+The CSV is excluded from version control by the repository's `.gitignore` file.
 
-- Python 3.12
-- pandas, NumPy – data manipulation
-- seaborn, matplotlib – visualization
-- JupyterLab – interactive analysis
+## Repository Structure
 
-## Project Structure
-
-```
+```text
 telco-churn-prediction/
-├── data/               # Raw and processed datasets
-├── notebooks/          # Jupyter notebooks (EDA, modeling)
-├── src/                # Source code (preprocessing, training)
-├── venv/               # Python virtual environment (not tracked)
+├── data/
+│   └── Telco-Customer-Churn.csv   # Input dataset
+├── notebook/
+│   └── analysis.ipynb              # Cleaning, EDA, preparation, and modeling
+├── learninglog.md                  # Progress notes and observations
+├── .gitignore
 └── README.md
 ```
 
-## Getting Started
+The `venv/` directory may exist locally as the Python virtual environment, but
+it is intentionally ignored and is not part of the project source.
 
-### Prerequisites
+## Requirements
 
-- Python 3.12+
+- Python 3.12 or later
+- JupyterLab or a Jupyter-compatible notebook interface
+- pandas
+- NumPy
+- Matplotlib
+- Seaborn
+- scikit-learn
 
-### Setup
+## Setup
 
-1. Clone the repository:
+From the repository root, create and activate a virtual environment if one does
+not already exist:
 
-   ```bash
-   git clone <repo-url>
-   cd telco-churn-prediction
-   ```
+```powershell
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+```
 
-2. Create and activate a virtual environment:
+Install the required packages:
 
-   ```powershell
-   python -m venv venv
-   ./venv/Scripts/Activate.ps1
-   ```
+```powershell
+python -m pip install pandas numpy matplotlib seaborn scikit-learn jupyterlab
+```
 
-3. Install dependencies and launch JupyterLab:
+## Run the Analysis
 
-   ```bash
-   pip install seaborn pandas numpy jupyterlab
-   jupyter lab
-   ```
+The notebook reads the CSV using a path relative to the `notebook/` directory.
+Start JupyterLab from that directory so the data path resolves correctly:
 
-## Workflow
+```powershell
+Set-Location .\notebook
+..\venv\Scripts\python.exe -m jupyter lab analysis.ipynb
+```
 
-1. **Data cleaning** – handle missing values, correct data types, remove duplicates
-2. **EDA** – explore churn distribution and feature relationships
-3. **Feature engineering** – encode categoricals, scale numeric features
-4. **Modeling** – train baseline classifiers (e.g., logistic regression, tree-based models)
-5. **Evaluation** – compare models using accuracy, precision, recall, F1, and ROC-AUC
+Alternatively, open `notebook/analysis.ipynb` in VS Code after selecting the
+project's `venv` interpreter, then run the cells from top to bottom.
 
-## Roadmap
+## Analysis Workflow
 
-- [ ] Add dataset and data dictionary
-- [ ] Exploratory data analysis notebook
-- [ ] Baseline model pipeline
-- [ ] Hyperparameter tuning and model comparison
-- [ ] Export predictions / deployment notes
+The notebook performs the following steps:
+
+1. Load the CSV into a pandas DataFrame.
+2. Inspect the shape, data types, and class distribution.
+3. Convert `TotalCharges` to numeric values and replace its 11 empty values
+   with `0`.
+4. Remove `customerID`, which is an identifier rather than a predictive feature.
+5. Convert `Churn` from `Yes`/`No` to the binary target values `1`/`0`.
+6. Explore churn rates, numerical distributions, boxplots, categorical churn
+   rates, and correlations.
+7. Combine `No internet service` and `No phone service` with the corresponding
+   `No` category.
+8. Separate the features (`X`) from the target (`y`) and one-hot encode
+   categorical features.
+9. Split the data into 80% training and 20% test sets using stratification and
+   `random_state=42`.
+10. Train a logistic regression pipeline with `StandardScaler` and
+    `class_weight="balanced"`.
+11. Evaluate the model with five-fold cross-validation, ROC-AUC,
+    classification metrics, and a confusion matrix.
+
+## Baseline Results
+
+The current logistic regression baseline achieved:
+
+- Cross-validation ROC-AUC: approximately **0.84**
+- Test ROC-AUC: approximately **0.84**
+- Churn recall: approximately **78%**
+- Churn precision: approximately **51%**
+
+The balanced class weights prioritize finding churners, which improves recall
+but also creates more false-positive churn predictions and therefore lowers
+precision. The model is suitable as a baseline for comparing future approaches,
+not as a production deployment model.
+
+## Learning Log
+
+Development observations and decisions are recorded in
+[`learninglog.md`](learninglog.md).
+
+## Next Steps
+
+- Compare logistic regression with tree-based and ensemble classifiers.
+- Tune the classification threshold based on retention-campaign costs.
+- Add hyperparameter tuning and a consistent preprocessing pipeline.
+- Compare models using precision, recall, F1-score, ROC-AUC, and a
+  precision-recall curve.
+- Add model interpretation and error analysis.
+- Document the data source and licensing information.
 
 ## License
 
-TBD
+No license has been specified yet.
