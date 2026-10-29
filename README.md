@@ -87,57 +87,44 @@ Set-Location .\notebook
 Alternatively, open `notebook/analysis.ipynb` in VS Code after selecting the
 project's `venv` interpreter, then run the cells from top to bottom.
 
-## Analysis Workflow
+# Analysis Workflow
 
-The notebook performs the following steps:
+## Goal
+Predict which telecom customers will leave, and recommend who to target with retention offers.
 
-1. Load the CSV into a pandas DataFrame.
-2. Inspect the shape, data types, and class distribution.
-3. Convert `TotalCharges` to numeric values and replace its 11 empty values
-   with `0`.
-4. Remove `customerID`, which is an identifier rather than a predictive feature.
-5. Convert `Churn` from `Yes`/`No` to the binary target values `1`/`0`.
-6. Explore churn rates, numerical distributions, boxplots, categorical churn
-   rates, and correlations.
-7. Combine `No internet service` and `No phone service` with the corresponding
-   `No` category.
-8. Separate the features (`X`) from the target (`y`) and one-hot encode
-   categorical features.
-9. Split the data into 80% training and 20% test sets using stratification and
-   `random_state=42`.
-10. Train a logistic regression pipeline with `StandardScaler` and
-    `class_weight="balanced"`.
-11. Evaluate the model with five-fold cross-validation, ROC-AUC,
-    classification metrics, and a confusion matrix.
+## Data
+Kaggle Telco Customer Churn: 7,032 customers (after removing 11 rows with
+no billing history), 19 features, 26.6% churn rate.
 
-## Baseline Results
+## Method
+1. EDA: histograms, boxplots, churn rate by category, correlation heatmap
+2. Cleaning: merged redundant categories, one-hot encoding, stratified 80/20 split
+3. Models: logistic regression (baseline), random forest, gradient boosting
+4. Evaluation: 5-fold cross-validation on the train set, then one final test
 
-The current logistic regression baseline achieved:
+## Results
+| Model | CV ROC-AUC |
+|---|---|
+| Logistic Regression | 0.845 |
+| Random Forest | 0.844 |
+| Gradient Boosting | 0.847 |
 
-- Cross-validation ROC-AUC: approximately **0.84**
-- Test ROC-AUC: approximately **0.84**
-- Churn recall: approximately **78%**
-- Churn precision: approximately **51%**
+All three performed about the same. Logistic regression test AUC: 0.841.
 
-The balanced class weights prioritize finding churners, which improves recall
-but also creates more false-positive churn predictions and therefore lowers
-precision. The model is suitable as a baseline for comparing future approaches,
-not as a production deployment model.
+## Key findings
+- New customers (low tenure) are the highest risk
+- Month-to-month contracts, fiber optic internet and electronic check payment
+  go with much higher churn
+- Two-year contracts almost never churn (~3%)
+
+## Business recommendation
+Customers who are new, on a month-to-month contract, using fiber internet and paying by electronic check are the most likely to leave. A simple model can find these customers reasonably well (AUC about 0.84). The company should focus retention efforts on this group, for example by encouraging longer contracts and automatic payment. Target customers and moving month-to-month customers to longer contracts and automatic payment.
 
 ## Learning Log
 
 Development observations and decisions are recorded in
 [`learninglog.md`](learninglog.md).
 
-## Next Steps
-
-- Compare logistic regression with tree-based and ensemble classifiers.
-- Tune the classification threshold based on retention-campaign costs.
-- Add hyperparameter tuning and a consistent preprocessing pipeline.
-- Compare models using precision, recall, F1-score, ROC-AUC, and a
-  precision-recall curve.
-- Add model interpretation and error analysis.
-- Document the data source and licensing information.
 
 ## License
 
