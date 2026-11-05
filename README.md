@@ -6,9 +6,6 @@ The analysis is implemented in a Jupyter notebook using pandas, visualization
 libraries, and scikit-learn.
 
 ## Project Status
-
-The project currently contains:
-
 - Data cleaning and type conversion
 - Exploratory data analysis (EDA)
 - Feature preparation and one-hot encoding
@@ -16,7 +13,6 @@ The project currently contains:
 - A scaled, class-balanced logistic regression baseline
 - Cross-validation and test-set evaluation
 
-Further model comparison and tuning are not implemented yet.
 
 ## Dataset
 
