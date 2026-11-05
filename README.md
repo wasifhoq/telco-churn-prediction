@@ -36,6 +36,8 @@ The CSV is excluded from version control by the repository's `.gitignore` file.
 
 ```text
 telco-churn-prediction/
+├── analysis/
+│   └── analysis.md                 # Exported analysis report with output plots
 ├── data/
 │   └── Telco-Customer-Churn.csv   # Input dataset
 ├── notebook/
@@ -87,6 +89,8 @@ Set-Location .\notebook
 Alternatively, open `notebook/analysis.ipynb` in VS Code after selecting the
 project's `venv` interpreter, then run the cells from top to bottom.
 
+A rendered markdown version of the analysis is also available in [`analysis/analysis.md`](analysis/analysis.md).
+
 # Analysis Workflow
 
 ## Goal
@@ -125,7 +129,3 @@ Customers who are new, on a month-to-month contract, using fiber internet and pa
 Development observations and decisions are recorded in
 [`learninglog.md`](learninglog.md).
 
-
-## License
-
-No license has been specified yet.
